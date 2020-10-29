@@ -44,7 +44,7 @@ import java.util.Optional;
 @Transactional
 public class GisCohortService {
     private static final String GET_COHORT_BOUNDS_SQL_PATH = "/bounds/getCohortBounds.sql";
-    private static final String GET_LOCATION_SQL_FILENAME = "/sql/getLocation.sql";
+    private static final String GET_LOCATION_SQL_FILENAME = "getLocation.sql";
     private static final String GET_LOCATION_SQL_PATH = "/sql/" + GET_LOCATION_SQL_FILENAME;
 
     private static final String CALCULATE_CONTOURS_R_PATH = "/density/calculateContours.R";
