@@ -143,15 +143,19 @@ disconnect(con)
 # fit <- kde2d(res$lon, res$lat, h = 0.015, n = 100)
 
 bandwidth <- 0.005
-fit <- bkde2D(res[,c('LONGITUDE', 'LATITUDE')], bandwidth = bandwidth, gridsize = c(250, 250))
-fit$x <- fit$x1
-fit$y <- fit$x2
-fit$z <- fit$fhat * bandwidth
+if (nrow(res) == 0) { # Empty geojson when no points found
+  cp <- '{"type": "FeatureCollection", "features": []}'
+} else {
+  fit <- bkde2D(res[,c('LONGITUDE', 'LATITUDE')], bandwidth = bandwidth, gridsize = c(250, 250))
+  fit$x <- fit$x1
+  fit$y <- fit$x2
+  fit$z <- fit$fhat * bandwidth
 
-levels <- c(0.00000001, 0.1, 10, 100, 500, 1000)
+  levels <- c(0.00000001, 0.1, 10, 100, 500, 1000)
 
-r <- raster(fit)
-cp <- raster2contourPolys(r, levels)
+  r <- raster(fit)
+  cp <- raster2contourPolys(r, levels)
+}
 
 cat(as.geojson(cp), file = "geo.json")
 
