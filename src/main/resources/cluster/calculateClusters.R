@@ -33,6 +33,9 @@ clusterCnt <- 10
 if (nrow(res) == 0) { # Empty geojson when no points found
   sp <- '{"type": "FeatureCollection", "features": []}'
 } else if (clusterCnt < nrow(res)) {
+    # kmeans uses random number generator so seed must be reseted each time to get constant results
+    # for the same input dataset between calls
+    set.seed(1)
     clusters <- kmeans(res[,c('LONGITUDE', 'LATITUDE')], clusterCnt)
 
     centersWithSubjectIds <- left_join(
