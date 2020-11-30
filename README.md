@@ -9,4 +9,7 @@ For example in the following way:
 ```
 mvn -Pwebapi-postgresql,webapi-gis clean package
 ```
+
+[ExecutionEngine](https://github.com/OHDSI/ArachneExecutionEngine) installed and running is required to use this component.
+ 
 **Note:** follow the instructions in the [Atlas project](https://github.com/OHDSI/Atlas) to include Geospatial UI part.
