@@ -3,6 +3,7 @@ package org.ohdsi.atlasgis.config;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.ohdsi.atlasgis.controller.GisCohortController;
 import org.ohdsi.atlasgis.controller.GisPersonController;
+import org.ohdsi.atlasgis.controller.GisSourceController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -19,6 +20,7 @@ public class GisConfig {
     @PostConstruct
     public void init() {
         jerseyConfig.packages(GIS_PACKAGES);
+        jerseyConfig.register(GisSourceController.class);
         jerseyConfig.register(GisCohortController.class);
         jerseyConfig.register(GisPersonController.class);
     }
