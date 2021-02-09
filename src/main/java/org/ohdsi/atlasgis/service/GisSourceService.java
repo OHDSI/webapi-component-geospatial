@@ -31,6 +31,8 @@ import java.nio.charset.StandardCharsets;
 @Transactional
 public class GisSourceService extends DataSourceJdbcExecutor {
     private final static String SOURCE_SQL_PATH = "/sql/getSource.sql";
+    private static final String CHECK_GEODATA_SQL_PATH = "/sql/checkGeodata.sql";
+
     private final JdbcTemplate jdbcTemplate;
     private final EncryptionService encryptionService;
     private final DataSourceMapper dataSourceMapper;
@@ -90,5 +92,22 @@ public class GisSourceService extends DataSourceJdbcExecutor {
 
         Source source = getByKey(dataSourceKey);
         return dataSourceMapper.toDatasourceUnsecuredDTO(source);
+    }
+
+    public boolean checkIfSourceHasGeodata(final String dataSourceKey) throws IOException {
+        final DataSourceUnsecuredDTO source = getDataSourceDTO(dataSourceKey);
+        try (final InputStream is = new ClassPathResource(CHECK_GEODATA_SQL_PATH).getInputStream()) {
+            final String sqlTmpl = SqlRender.renderSql(IOUtils.toString(is, StandardCharsets.UTF_8),
+                    new String[]{"cdmSchema"},
+                    new String[]{source.getCdmSchema()});
+            final String sql = SqlTranslate.translateSql(sqlTmpl, source.getType().getOhdsiDB());
+            executeOnSource(source, jdbcTemplate -> {
+                jdbcTemplate.query(sql, rs -> {});
+                return true;
+            });
+            return true;
+        } catch (final Exception e) {
+            return false;
+        }
     }
 }
